@@ -117,13 +117,13 @@ project/
 ## Clone Repository
 
 ```bash
-git clone https://github.com/rohitrajput21250/multiplayer-ship-destroyer.git
+git clone https://github.com/rohitrajput21250/Multiplayer-Ship-Destroyer-Game/
 ```
 
 ## Navigate to Project
 
 ```bash
-cd multiplayer-ship-destroyer
+cd Multiplayer-Ship-Destroyer-Game
 ```
 
 ## Install Dependencies

@@ -15,18 +15,18 @@ var gameIdCounter = 1;
 
 app.use(express.static(__dirname + '/public'));
 
-http.listen(port, function(){
+http.listen(port, function () {
   console.log('listening on *:' + port);
 });
 
-io.on('connection', function(socket) {
+io.on('connection', function (socket) {
   console.log((new Date().toISOString()) + ' ID ' + socket.id + ' connected.');
 
   // create user object for additional data
   users[socket.id] = {
     inGame: null,
     player: null
-  }; 
+  };
 
   // join waiting room until there are enough players to start a new game
   socket.join('waiting room');
@@ -34,10 +34,10 @@ io.on('connection', function(socket) {
   /**
    * Handle chat messages
    */
-  socket.on('chat', function(msg) {
-    if(users[socket.id].inGame !== null && msg) {
+  socket.on('chat', function (msg) {
+    if (users[socket.id].inGame !== null && msg) {
       console.log((new Date().toISOString()) + ' Chat message from ' + socket.id + ': ' + msg);
-      
+
       // Send message to opponent
       socket.broadcast.to('game' + users[socket.id].inGame.id).emit('chat', {
         name: 'Opponent',
@@ -55,15 +55,15 @@ io.on('connection', function(socket) {
   /**
    * Handle shot from client
    */
-  socket.on('shot', function(position) {
+  socket.on('shot', function (position) {
     var game = users[socket.id].inGame, opponent;
 
-    if(game !== null) {
+    if (game !== null) {
       // Is it this users turn?
-      if(game.currentPlayer === users[socket.id].player) {
+      if (game.currentPlayer === users[socket.id].player) {
         opponent = game.currentPlayer === 0 ? 1 : 0;
 
-        if(game.shoot(position)) {
+        if (game.shoot(position)) {
           // Valid shot
           checkGameOver(game);
 
@@ -74,12 +74,12 @@ io.on('connection', function(socket) {
       }
     }
   });
-  
+
   /**
    * Handle leave game request
    */
-  socket.on('leave', function() {
-    if(users[socket.id].inGame !== null) {
+  socket.on('leave', function () {
+    if (users[socket.id].inGame !== null) {
       leaveGame(socket);
 
       socket.join('waiting room');
@@ -90,9 +90,9 @@ io.on('connection', function(socket) {
   /**
    * Handle client disconnect
    */
-  socket.on('disconnect', function() {
+  socket.on('disconnect', function () {
     console.log((new Date().toISOString()) + ' ID ' + socket.id + ' disconnected.');
-    
+
     leaveGame(socket);
 
     delete users[socket.id];
@@ -106,8 +106,8 @@ io.on('connection', function(socket) {
  */
 function joinWaitingPlayers() {
   var players = getClientsInRoom('waiting room');
-  
-  if(players.length >= 2) {
+
+  if (players.length >= 2) {
     // 2 player waiting. Create new game!
     var game = new BattleshipGame(gameIdCounter++, players[0].id, players[1].id);
 
@@ -121,7 +121,7 @@ function joinWaitingPlayers() {
     users[players[1].id].player = 1;
     users[players[0].id].inGame = game;
     users[players[1].id].inGame = game;
-    
+
     io.to('game' + game.id).emit('join', game.id);
 
     // send initial ship placements
@@ -137,7 +137,7 @@ function joinWaitingPlayers() {
  * @param {type} socket
  */
 function leaveGame(socket) {
-  if(users[socket.id].inGame !== null) {
+  if (users[socket.id].inGame !== null) {
     console.log((new Date().toISOString()) + ' ID ' + socket.id + ' left game ID ' + users[socket.id].inGame.id);
 
     // Notifty opponent
@@ -145,7 +145,7 @@ function leaveGame(socket) {
       message: 'Opponent has left the game'
     });
 
-    if(users[socket.id].inGame.gameStatus !== GameStatus.gameOver) {
+    if (users[socket.id].inGame.gameStatus !== GameStatus.gameOver) {
       // Game is unfinished, abort it.
       users[socket.id].inGame.abortGame(users[socket.id].player);
       checkGameOver(users[socket.id].inGame);
@@ -165,7 +165,7 @@ function leaveGame(socket) {
  * @param {type} game
  */
 function checkGameOver(game) {
-  if(game.gameStatus === GameStatus.gameOver) {
+  if (game.gameStatus === GameStatus.gameOver) {
     console.log((new Date().toISOString()) + ' Game ID ' + game.id + ' ended.');
     io.to(game.getWinnerId()).emit('gameover', true);
     io.to(game.getLoserId()).emit('gameover', false);
@@ -179,8 +179,14 @@ function checkGameOver(game) {
  */
 function getClientsInRoom(room) {
   var clients = [];
-  for (var id in io.sockets.adapter.rooms[room]) {
-    clients.push(io.sockets.adapter.nsp.connected[id]);
+  var roomClients = io.sockets.adapter.rooms.get(room);
+  if (roomClients) {
+    roomClients.forEach(function (socketId) {
+      var socket = io.sockets.sockets.get(socketId);
+      if (socket) {
+        clients.push(socket);
+      }
+    });
   }
   return clients;
 }

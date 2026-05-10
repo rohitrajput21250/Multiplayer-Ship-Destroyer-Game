@@ -1,0 +1,19 @@
+{
+  "name": "nodebattleship",
+  "version": "0.0.1",
+  "description": "Multiplayer Battleship with NodeJS and Socket.io",
+  "keywords": [],
+  "license": "ISC",
+  "author": "Christian Nilsson",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.22.1",
+    "html-entities": "1.1.2",
+    "socket.io": "^4.8.3"
+  }
+}

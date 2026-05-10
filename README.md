@@ -83,7 +83,7 @@ project/
 
 🚀 Installation & Setup
 Clone Repository
-git clone https://github.com/your-username/multiplayer-ship-destroyer.git
+git clone https: https://github.com/rohitrajput21250/Multiplayer-Ship-Destroyer-Game/
 Navigate to Project
 cd multiplayer-ship-destroyer
 Install Dependencies

@@ -99,13 +99,13 @@ Example:
 project/
 │
 ├── client/
-│   ├── src/
+│   ├── app/
 │   ├── public/
+
 │
-├── server/
-│   ├── socket/
-│   ├── routes/
-│
+
+├── server.js
+├── .gitignore
 ├── package.json
 └── README.md
 ```
@@ -117,7 +117,7 @@ project/
 ## Clone Repository
 
 ```bash
-git clone https://github.com/your-username/multiplayer-ship-destroyer.git
+git clone https://github.com/rohitrajput21250/multiplayer-ship-destroyer.git
 ```
 
 ## Navigate to Project
@@ -150,16 +150,6 @@ npm start
 6. Game ends when all ships are destroyed
 
 ---
-
-# 📸 Screenshots
-
-Add screenshots here after uploading images.
-
-Example:
-
-```md
-![Game Screenshot](./screenshots/game.png)
-```
 
 ---
 
